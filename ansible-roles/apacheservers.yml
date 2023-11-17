@@ -1,0 +1,13 @@
+---
+- name: Top Level Apache Server playbook
+  hosts: apacheservers
+  remote_user: cecuser
+  become: true
+  vars:
+    http_port: 8080
+    apache_document_root: /ibmdata/htdocs
+    server_type: "WatsonX Bootcamp"
+  roles:
+    - httpd
+    - httpd.conf
+    - index.html

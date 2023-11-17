@@ -1,0 +1,20 @@
+---
+- name: stop services and remove packages
+  hosts: ansible1.example.com
+  tasks:
+    - name: firewall close access to http service
+      debug:
+        msg: use firewall module set the state of http service to absent
+
+    - name: stop and disable httpd and firewalld services
+      debug:
+        msg: stop and disable httpd and firewalld services
+
+    - name: remove index file
+      debug:
+        msg: use file module to remove directory and file
+
+    - name: remove httpd and firewalld packages
+      debug:
+        msg: remove httpd and firewalld packages
+      

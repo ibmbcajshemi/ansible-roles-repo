@@ -1,0 +1,51 @@
+---
+- name: remove httpd
+  hosts: ansible1.example.com
+  tasks:
+    - name: firewall close access to http service
+
+      firewalld:
+        service: http
+        permanent: yes
+        state: disabled
+      ignore_errors: true
+
+    - name: firewall close access to port 82
+
+      firewalld:
+        port: 82/tcp
+        permanent: yes
+        state: disabled
+      ignore_errors: true
+
+    - name: Selinu Disallow Apache to listen on tcp port 82
+
+      community.general.seport:
+        ports: 82
+        proto: tcp
+        setype: http_port_t
+        state: absent
+
+    - name: Ensure the default Apache port return to 80
+
+      ansible.builtin.lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^Listen '
+        insertafter: '^#Listen '
+        line: Listen 80
+
+    - name: remove index file
+
+      file:
+        path: /var/www/html/index.html
+        state: absent
+      ignore_errors: true
+
+    - name: remove packages
+
+      package:
+        name: 
+          - httpd
+          - firewalld
+        state: absent
+

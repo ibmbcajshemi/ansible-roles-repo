@@ -1,0 +1,42 @@
+---
+- name: Ansible tasks
+  hosts: localhost
+  become: true
+
+  tasks:
+  - name: add user
+    ansible.builtin.user:
+      name: placeholder
+      shell: /bin/bash
+
+  - name: add user 'bob'
+    ansible.builtin.user:
+      name: bob
+      shell: /bin/bash
+
+  - name: upgrade all apt packages
+    ansible.builtin.apt:
+      upgrade: dist
+      update_cache: true
+      cache_valid_time: 3600
+
+  - name: Copy file 'hosts' to '/home/dest' and set the mode to '666'
+    ansible.builtin.file:
+      path: /home/ano-user
+      state: directory
+      mode: '666'
+  
+  - name: debug inventory_hostname
+    ansible.builtin.debug:
+      msg: "{{ inventory_hostname }}"
+  
+  - name: create users 'nate' with password 123 'kelly' with password 690 and 'freddy' with password 999
+    ansible.builtin.user:
+      name: "{{ item }}"
+      password: "{{ _password_ }}"
+      shell: /bin/bash
+      groups:
+        - nate
+        - kelly
+        - bob
+      append: true

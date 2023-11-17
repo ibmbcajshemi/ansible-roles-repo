@@ -1,0 +1,6 @@
+{
+    "ansible.python.interpreterPath": "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "ansible.lightspeed.suggestions.enabled": true,
+    "ansible.lightspeed.modelIdOverride": "9b8ca819-8e88-49c5-8d21-064b304be2e3<|sepofid|>granite-3b",
+    "ansible.lightspeed.enabled": true
+}

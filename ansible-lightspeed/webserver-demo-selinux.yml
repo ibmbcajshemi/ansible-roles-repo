@@ -1,0 +1,92 @@
+---
+#playbook to setup webserver with firewall
+- name: playbook to setup web server
+  hosts: ansible1.example.com
+  tasks: 
+  - name: latest version of firewalld and httpd packages installed
+
+    ansible.builtin.package:
+      name:
+        - firewalld
+        - httpd
+      state: latest
+
+  - name:  firewalld and httpd are enabled and running
+
+    ansible.builtin.service:
+      name: "{{ item }}"
+      state: started
+      enabled: true
+    loop:
+      - firewalld
+      - httpd
+
+  - name: copy content to /var/www/html/
+
+    ansible.builtin.copy:
+      content: "welcome to the team fsm-sig-squad2 webserver page\n"
+      dest: /var/www/html/index.html
+
+  - name: Set the default Apache port to 82
+
+    ansible.builtin.lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^Listen '
+      insertafter: '^#Listen '
+      line: Listen 82
+    notify: restart httpd
+ 
+  - name: Allow Apache to listen on tcp port 82
+
+    community.general.seport:
+      ports: 82
+      proto: tcp
+      setype: http_port_t
+      state: present
+    notify: restart httpd
+
+  - name: firewalld allow access to httpd service
+    
+    ansible.posix.firewalld:
+      service: http
+      permanent: true
+      state: enabled
+      immediate: true
+
+  - name: firewalld to allow access to port 82
+    
+    ansible.posix.firewalld:
+      port: 82/tcp
+      permanent: true
+      state: enabled
+      immediate: true
+  
+  handlers:
+  - name: restart httpd
+
+    service: 
+      name: httpd
+      state: restarted
+
+
+# another play to test webserver from the control node
+- name: Test intranet web server 
+  hosts: localhost
+  tasks:
+  - name: test and register web content 
+
+    ansible.builtin.uri:
+      url: http://ansible1.example.com:82
+      return_content: true
+    register: webpage
+    failed_when: "'welcome to the team fsm-sig-squad2 webserver page' not in webpage.content"
+
+  - name: print webserver conent
+
+    ansible.builtin.debug:
+      var: webpage.content
+
+
+
+
+

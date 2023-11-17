@@ -1,0 +1,23 @@
+---
+- name: Write a notebook that creates a AWS VPC which will have 2 subnets
+  community.aws.ec2_vpc:
+    cidr_block: 10.0.0.80/16
+    wait: true
+    tags:
+      module: ec2_vpc_net
+    tenancy: dedicated
+  register: my_first_vpc
+- name: the VPC has one public subnets and one private subnets
+  amazon.aws.ec2_vpc_subnet:
+    az: us-east-1a
+    tags:
+      Name: PublicSubnet1
+    vpc_id: "{{ _vpc_id_ }}"
+    cidr: 10.0.0.80/24
+    state: present
+  register: my_first_subnet
+
+
+
+
+

@@ -1,0 +1,7 @@
+---
+# ansible galaxy collections used in this playbook
+# install with ansible-playbook roles/requirements.txt
+
+collections:
+- ansible.posix
+- community.general

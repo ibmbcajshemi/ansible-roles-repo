@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ server_type }} Server Animation</title>
+  <style>
+    .animation {
+      font-family: monospace;
+    }
+  </style>
+  <script>
+    window.onload = function() {
+      var animationElement = document.getElementById("animation");
+      var frames = ["-", "\\", "|", "/"];
+      var currentFrameIndex = 0;
+
+      function animate() {
+        animationElement.textContent = frames[currentFrameIndex];
+        currentFrameIndex = (currentFrameIndex + 1) % frames.length;
+        setTimeout(animate, 100); // Adjust the duration between frames (in milliseconds) as desired
+      }
+
+      animate();
+    };
+  </script>
+</head>
+<body>
+  <h1>Welcome to the <span id="animation"></span> {{ server_type }} Ansible LightSpeed Demo</h1>
+  <p>This is a sample web page to demonstrate Ansible LightSpeed with Watson Code Assistant Demo.</p>
+</body>
+</html>
+

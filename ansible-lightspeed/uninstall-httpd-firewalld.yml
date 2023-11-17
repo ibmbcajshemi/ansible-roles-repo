@@ -1,0 +1,24 @@
+---
+- name: remove httpd
+  hosts: ansible1.example.com
+  tasks:
+    - name: firewall close access to http service
+
+      firewalld:
+        service: http
+        permanent: yes
+        state: disabled
+
+    - name: remove index file
+
+      ansible.builtin.file:
+        path: /var/www/html/index.html
+        state: absent
+
+    - name: remove packages
+    
+      ansible.builtin.package:
+        name:
+          - httpd
+          - firewalld
+        state: absent

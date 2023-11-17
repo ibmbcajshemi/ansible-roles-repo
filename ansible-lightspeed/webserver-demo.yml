@@ -1,0 +1,65 @@
+---
+#playbook to setup webserver with firewall
+- name: playbook to setup web server
+  hosts: ansible1.example.com
+  tasks: 
+  - name: latest version of firewalld and httpd packages installed
+  
+    ansible.builtin.package:
+      name:
+        - firewalld
+        - httpd
+      state: latest
+
+  - name: copy content to /var/www/html/
+    ansible.builtin.copy:
+      content: "welcome to the team fsm-sig-squad2 web server\n"
+      dest: /var/www/html/index.html
+
+  - name:  firewalld and httpd are enabled and running
+    ansible.builtin.service:
+      name: "{{ item }}"
+      state: started
+      enabled: true
+    loop:
+      - firewalld
+      - httpd
+
+  - name: firewalld allow access to httpd service
+    ansible.posix.firewalld:
+      service: http
+      permanent: true
+      state: enabled
+      immediate: true
+  - name: firewalld to allow access to port 8080
+    ansible.posix.firewalld:
+      port: 8080/tcp
+      permanent: true
+      state: enabled
+      immediate: true
+# another play to test webserver from the control node
+- name: Test intranet web server 
+  hosts: localhost
+  tasks:
+  - name: test and register web content  
+
+    ansible.builtin.uri:
+      url: http://ansible1.example.com
+      return_content: true
+    register: webpage
+    failed_when: "'welcome to the team fsm-sig-squad2 web server' not in webpage.content"
+
+- name: print webpage content
+  ansible.builtin.debug:
+    var: webpage.content
+
+
+
+
+
+
+
+
+
+
+

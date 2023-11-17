@@ -1,0 +1,25 @@
+---
+- name: Create /ibmdata/htdocs directory
+  ansible.builtin.file:
+    path: /ibmdata/htdocs
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Install httpd
+  ansible.builtin.package:
+    name: httpd
+    state: present
+
+- name: Configure apache seport to listen on tcp 8080 and 8443
+  community.general.seport:
+    ports: 8080,8443
+    proto: tcp
+    setype: http_port_t
+    state: present
+
+- name: Enable httpd to start at boot
+  ansible.builtin.service:
+    name: httpd
+    enabled: true
